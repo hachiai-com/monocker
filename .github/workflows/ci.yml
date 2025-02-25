@@ -19,7 +19,7 @@ on:
 
   push:
     branches:
-      - 'feature/newRelic-Logs'  # Trigger on pushes to this specific branch
+      - 'master'  # Trigger on pushes to this specific branch
 
 jobs:
   build-and-push:
