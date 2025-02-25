@@ -1,21 +1,25 @@
 name: Docker build to trigger manually based on workflow dispatch
 
 env:
-  SERVICE_NAME: monocler-app # Update the service name to reflect your app's name
-  PROJECT_ID: dev-hachiai # Keep the project ID or update it if necessary
-  REPO_NAME: monocler-repo # Update the repository name to the new GCR repository name
-
+  SERVICE_NAME: monocler-app  # Update the service name to reflect your app's name
+  PROJECT_ID: dev-hachiai  # Keep the project ID or update it if necessary
+  REPO_NAME: monocler-repo  # Update the repository name to the new GCR repository name
+  
 on:
   workflow_dispatch:
     inputs:
       branch:
-        description: "feature/newRelic-Logs"
+        description: 'Branch to build from'
         required: true
-        default: "feature/newRelic-Logs"
+        default: 'main'
       tag:
-        description: "Docker image tag (e.g., version, commit SHA, etc.)"
+        description: 'Docker image tag (e.g., version, commit SHA, etc.)'
         required: true
-        default: "latest"
+        default: 'latest'
+
+  push:
+    branches:
+      - 'feature/newRelic-Logs'  # Trigger on pushes to this specific branch
 
 jobs:
   build-and-push:
@@ -25,12 +29,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          ref: ${{ github.event.inputs.branch }}
-
+          ref: ${{ github.event.inputs.branch }}  # This will work for workflow_dispatch input
+          
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: "16" # Use the Node.js version that matches your app
+          node-version: '16'  # Use the Node.js version that matches your app
 
       - name: Install dependencies
         run: npm install --legacy-peer-deps
