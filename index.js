@@ -309,62 +309,6 @@ async function sendApprise(aTitle, message) {
     });
 }
 
-// async function sendNewRelic(title, message) {
-//   try {
-//     // Get current timestamp in ISO format
-//     const timestamp = new Date().toISOString();
-
-//     // Format the log data according to New Relic's API requirements
-//     const logData = [
-//       {
-//         common: {
-//           attributes: {
-//             logtype: "dockerstatus",
-//             service: "monocker",
-//             hostname: SERVER_LABEL || "docker-host",
-//           },
-//         },
-//         logs: [
-//           {
-//             timestamp: timestamp,
-//             message: message,
-//             attributes: {
-//               title: title,
-//               server: SERVER_LABEL,
-//               version: pjson.version,
-//             },
-//           },
-//         ],
-//       },
-//     ];
-
-//     // Make the API request to New Relic
-//     const response = await axios.post(
-//       "https://log-api.newrelic.com/log/v1",
-//       logData,
-//       {
-//         headers: {
-//           "Content-Type": "application/json",
-//           "Api-Key": msgDetails[1], // Using the API key from the message platform details
-//         },
-//       }
-//     );
-
-//     console.log(`New Relic log sent successfully. Status: ${response.status}`);
-//   } catch (error) {
-//     console.error("** New Relic Exception:", error.message);
-//     if (error.response) {
-//       console.error(
-//         `New Relic Response: ${error.response.status} - ${JSON.stringify(
-//           error.response.data
-//         )}`
-//       );
-//     }
-//   }
-// }
-
-// Convert import.meta.url to a directory path
-
 async function sendNewRelic(title, message) {
   try {
     const timestamp = new Date().toISOString();
@@ -485,7 +429,7 @@ async function list() {
     function (err, containers) {
       // check for changes in status (first run is populating data only)
       let newConArray = [];
-      if (containers.length > 0) {
+      if (containers?.length > 0) {
         containers.forEach((c) => {
           // if label_enable is false then exclude any specifically false labelled containers
           if (
@@ -597,13 +541,12 @@ async function list() {
           if (
             delArray.length == 0 &&
             EXCLUDE_EXITED !== "true" &&
-            typeof c.Id !== "undefined" &&
-            c.Id
+            typeof c.split(",")[0] !== "undefined" &&
+            c.split(",")[0]
           ) {
             var output = c.split(",")[2].replace("/", "") + ": exited";
             if (SHA.toLowerCase() == "true") {
-              output += " " + c.Id;
-              console.log(c);
+              output += " " + c.split(",")[0];
             }
             console.log("     - " + output);
             //send(output)
